@@ -40,49 +40,60 @@ pipeline {
             }
         }
         stage('Performance Gate') {
+
             steps {
+
                 script {
 
                     def total = 0
                     def failed = 0
-
+        
                     def lines = readFile(env.RESULT_FILE).split("\\r?\\n")
-
-                    for (line in lines.drop(1)) {
-
+        
+                    for (int i = 1; i < lines.size(); i++) {
+        
+                        def line = lines[i]
+        
                         if (line.trim()) {
-
+        
                             total++
-
+        
                             def cols = line.split(',')
-
+        
                             if (cols.size() > 7) {
-
+        
                                 def success = cols[7]
-
+        
                                 if (success == "false") {
+        
                                     failed++
                                 }
                             }
                         }
                     }
-
+        
+                    if (total == 0) {
+        
+                        error("No samples found in JTL result file.")
+                    }
+        
                     def errorPercent = (failed * 100.0) / total
-
+        
                     echo "Total Samples: ${total}"
+        
                     echo "Failed Samples: ${failed}"
+        
                     echo "Error Percentage: ${errorPercent}%"
-
+        
                     if (errorPercent > env.ERROR_THRESHOLD.toInteger()) {
-
+        
                         currentBuild.result = 'FAILURE'
-
+        
                         error("Performance Gate Failed! Error % exceeded threshold.")
                     }
                 }
             }
         }
-
         stage('Publish HTML Report') {
             steps {
 
