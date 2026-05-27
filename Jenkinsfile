@@ -20,24 +20,25 @@ pipeline {
 
         stage('Run JMeter Test') {
 
-    steps {
+            steps {
 
-        bat """
-        if not exist results mkdir results
+                bat """
+                if not exist results mkdir results
 
-        if exist reports rmdir /s /q reports
-        mkdir reports
+                if exist reports rmdir /s /q reports
+                mkdir reports
 
-        %JMETER_HOME%\\bin\\jmeter.bat ^
-        -n ^
-        -t "%TEST_PLAN%" ^
-        -l "%RESULT_FILE%" ^
-        -e ^
-        -o "%REPORT_DIR%"
-        """
-    }
-}
+                if exist results\\result.jtl del /f /q results\\result.jtl
 
+                %JMETER_HOME%\\bin\\jmeter.bat ^
+                -n ^
+                -t "%TEST_PLAN%" ^
+                -l "%RESULT_FILE%" ^
+                -e ^
+                -o "%REPORT_DIR%"
+                """
+            }
+        }
         stage('Performance Gate') {
             steps {
                 script {
