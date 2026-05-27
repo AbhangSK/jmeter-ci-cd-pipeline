@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JMETER_HOME = "C:\\JMeterInstallation\\apache-jmeter-5.6.3"
-        TEST_PLAN = "Altoro Mutual Home Page.jmx"
+        TEST_PLAN = "Altoro_Mutual_Home_Page.jmx"
         RESULT_FILE = "results\\result.jtl"
         REPORT_DIR = "reports"
         ERROR_THRESHOLD = 2
